@@ -1,6 +1,7 @@
 import telebot
 import requests
-import google.generativeai as genai
+import os
+from google import genai
 import io
 import logging
 import urllib3
@@ -18,20 +19,16 @@ GEMINI_KEY = os.getenv("GEMINI_KEY")
 VOICE_ID = 552  # Лунтик
 TTS_URL = "https://public.api.voice.steos.io/api/v1/tts/synthesize"
 
-genai.configure(api_key=GEMINI_KEY)
 bot = telebot.TeleBot(BOT_TOKEN)
 
 
 def generate_text(user_question: str) -> str | None:
     try:
-        model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
-            system_instruction=(
-                "Ты Лунтик — добрый, наивный, говоришь просто и мило. "
-                "Отвечай коротко — максимум 3 предложения."
-            )
+        client = genai.Client(api_key=os.getenv("GEMINI_KEY"))
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=user_question
         )
-        response = model.generate_content(user_question)
         return response.text
     except Exception as e:
         logger.error(f"Ошибка генерации: {e}")
