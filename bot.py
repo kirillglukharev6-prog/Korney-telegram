@@ -23,12 +23,18 @@ bot = telebot.TeleBot(BOT_TOKEN)
 
 def generate_text(user_question: str) -> str | None:
     try:
-        client = genai.Client(api_key=os.getenv("GEMINI_KEY"))
-        response = client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=user_question
-        )
-        return response.text
+        url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+        headers = {"Content-Type": "application/json"}
+        params = {"key": os.getenv("GEMINI_KEY")}
+        payload = {
+            "contents": [{"parts": [{"text": user_question}]}],
+            "systemInstruction": {
+                "parts": [{"text": "Ты Лунтик — добрый, наивный, отвечай коротко и мило. Максимум 3 предложения."}]
+            }
+        }
+        response = requests.post(url, headers=headers, params=params, json=payload, timeout=15)
+        data = response.json()
+        return data["candidates"][0]["content"]["parts"][0]["text"]
     except Exception as e:
         logger.error(f"Ошибка генерации: {e}")
         return None
