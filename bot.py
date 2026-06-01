@@ -22,18 +22,25 @@ bot = telebot.TeleBot(BOT_TOKEN)
 
 def generate_text(user_question: str) -> str | None:
     try:
-        url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
-        headers = {"Content-Type": "application/json"}
-        params = {"key": os.getenv("GEMINI_KEY")}
-        payload = {
-            "contents": [{"parts": [{"text": user_question}]}],
-            "systemInstruction": {
-                "parts": [{"text": "Ты Лунтик — добрый, наивный, отвечай коротко и мило. Максимум 3 предложения."}]
-            }
+        headers = {
+            "Authorization": f"Bearer {os.getenv('OPENROUTER_KEY')}",
+            "Content-Type": "application/json"
         }
-        response = requests.post(url, headers=headers, params=params, json=payload, timeout=15)
+        payload = {
+            "model": "mistralai/mistral-7b-instruct:free",
+            "messages": [
+                {"role": "system", "content": "Ты Лунтик — добрый, наивный, отвечай коротко и мило. Максимум 3 предложения."},
+                {"role": "user", "content": user_question}
+            ]
+        }
+        response = requests.post(
+            "https://openrouter.ai/api/v1/chat/completions",
+            headers=headers,
+            json=payload,
+            timeout=15
+        )
         data = response.json()
-        return data["candidates"][0]["content"]["parts"][0]["text"]
+        return data["choices"][0]["message"]["content"]
     except Exception as e:
         logger.error(f"Ошибка генерации: {e}")
         return None
