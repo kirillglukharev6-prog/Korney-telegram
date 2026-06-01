@@ -1,7 +1,6 @@
 import telebot
 import requests
 import os
-from google import genai
 import io
 import logging
 import urllib3
