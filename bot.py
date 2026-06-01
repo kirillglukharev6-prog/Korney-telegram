@@ -5,7 +5,6 @@ from google import genai
 import io
 import logging
 import urllib3
-from os import getenv
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
