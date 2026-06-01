@@ -11,9 +11,9 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 
-BOT_TOKEN = "8860094100:AAFPAk-9Qj8sMH9K0OWM-qDe7VlJabSGDUk"
-STEOS_TOKEN = "9711b88e-af02-438f-82f0-fa4a26f2ce07"
-GEMINI_KEY = "AQ.Ab8RN6Le3VDd_W7MgbAJLZ9yynjvJXjPPr10TjliWxmkoSWtmw"
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+STEOS_TOKEN = os.getenv("STEOS_TOKEN")
+GEMINI_KEY = os.getenv("GEMINI_KEY")
 
 VOICE_ID = 552  # Лунтик
 TTS_URL = "https://public.api.voice.steos.io/api/v1/tts/synthesize"
