@@ -27,7 +27,7 @@ def generate_text(user_question: str) -> str | None:
             "Content-Type": "application/json"
         }
         payload = {
-            "model": "qwen/qwen3-8b:free",
+            "model": "meta-llama/llama-3.3-70b-instruct:free",
             "messages": [
                 {"role": "system", "content": "Ты Лунтик — добрый, наивный, отвечай коротко и мило. Максимум 3 предложения."},
                 {"role": "user", "content": user_question}
