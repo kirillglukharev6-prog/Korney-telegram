@@ -40,12 +40,11 @@ def generate_text(user_question: str) -> str | None:
             timeout=15
         )
         data = response.json()
-logger.info(f"OpenRouter ответ: {data}")
+        logger.info(f"OpenRouter ответ: {data}")
         if "choices" in data:
-    return data["choices"][0]["message"]["content"]
-else:
-    logger.error(f"Неожиданный ответ: {data}")
-    return None
+            return data["choices"][0]["message"]["content"]
+        logger.error(f"Неожиданный ответ: {data}")
+        return None
     except Exception as e:
         logger.error(f"Ошибка генерации: {e}")
         return None
