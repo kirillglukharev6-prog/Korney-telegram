@@ -22,10 +22,11 @@ bot = telebot.TeleBot(BOT_TOKEN)
 
 def generate_text(user_question: str) -> str | None:
     models = [
-        "meta-llama/llama-3.3-70b-instruct:free",
-        "nous/hermes-3-405b-instruct:free",
-        "google/gemma-2-9b-it:free",
-        "mistralai/mistral-7b-instruct:free",
+    "moonshotai/kimi-k2:free",
+    "google/gemma-3-27b-it:free",
+    "nvidia/llama-3.1-nemotron-nano-8b-v1:free",
+    "liquid/lfm-7b:free",
+    ]
     ]
     headers = {
         "Authorization": f"Bearer {os.getenv('OPENROUTER_KEY')}",
