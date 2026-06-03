@@ -27,7 +27,7 @@ def generate_text(user_question: str) -> str | None:
     "nvidia/llama-3.1-nemotron-nano-8b-v1:free",
     "liquid/lfm-7b:free",
     ]
-    ]
+    
     headers = {
         "Authorization": f"Bearer {os.getenv('OPENROUTER_KEY')}",
         "Content-Type": "application/json"
