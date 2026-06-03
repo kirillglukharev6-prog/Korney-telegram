@@ -27,7 +27,7 @@ def generate_text(user_question: str) -> str | None:
             "Content-Type": "application/json"
         }
         payload = {
-            "model": "google/gemma-3-1b-it:free",
+            "model": "deepseek/deepseek-r1:free",
             "messages": [
                 {"role": "system", "content": "Ты Лунтик — добрый, наивный, отвечай коротко и мило. Максимум 3 предложения."},
                 {"role": "user", "content": user_question}
