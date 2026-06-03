@@ -21,33 +21,38 @@ bot = telebot.TeleBot(BOT_TOKEN)
 
 
 def generate_text(user_question: str) -> str | None:
-    try:
-        headers = {
-            "Authorization": f"Bearer {os.getenv('OPENROUTER_KEY')}",
-            "Content-Type": "application/json"
-        }
-        payload = {
-            "model": "meta-llama/llama-3.3-70b-instruct:free",
-            "messages": [
-                {"role": "system", "content": "Ты Лунтик — добрый, наивный, отвечай коротко и мило. Максимум 3 предложения."},
-                {"role": "user", "content": user_question}
-            ]
-        }
-        response = requests.post(
-            "https://openrouter.ai/api/v1/chat/completions",
-            headers=headers,
-            json=payload,
-            timeout=15
-        )
-        data = response.json()
-        logger.info(f"OpenRouter ответ: {data}")
-        if "choices" in data:
-            return data["choices"][0]["message"]["content"]
-        logger.error(f"Неожиданный ответ: {data}")
-        return None
-    except Exception as e:
-        logger.error(f"Ошибка генерации: {e}")
-        return None
+    models = [
+        "meta-llama/llama-3.3-70b-instruct:free",
+        "nous/hermes-3-405b-instruct:free",
+        "google/gemma-2-9b-it:free",
+        "mistralai/mistral-7b-instruct:free",
+    ]
+    headers = {
+        "Authorization": f"Bearer {os.getenv('OPENROUTER_KEY')}",
+        "Content-Type": "application/json"
+    }
+    for model in models:
+        try:
+            payload = {
+                "model": model,
+                "messages": [
+                    {"role": "system", "content": "Ты Лунтик — добрый, наивный, отвечай коротко и мило. Максимум 3 предложения."},
+                    {"role": "user", "content": user_question}
+                ]
+            }
+            response = requests.post(
+                "https://openrouter.ai/api/v1/chat/completions",
+                headers=headers,
+                json=payload,
+                timeout=15
+            )
+            data = response.json()
+            if "choices" in data:
+                return data["choices"][0]["message"]["content"]
+            logger.warning(f"Модель {model} не ответила: {data}")
+        except Exception as e:
+            logger.error(f"Ошибка модели {model}: {e}")
+    return None
 
 
 def synthesize_voice(text: str) -> bytes | None:
