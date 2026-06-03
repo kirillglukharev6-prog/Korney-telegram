@@ -19,41 +19,33 @@ TTS_URL = "https://public.api.voice.steos.io/api/v1/tts/synthesize"
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
-
 def generate_text(user_question: str) -> str | None:
-    models = [
-    "moonshotai/kimi-k2:free",
-    "google/gemma-3-27b-it:free",
-    "nvidia/llama-3.1-nemotron-nano-8b-v1:free",
-    "liquid/lfm-7b:free",
-    ]
-    
-    headers = {
-        "Authorization": f"Bearer {os.getenv('OPENROUTER_KEY')}",
-        "Content-Type": "application/json"
-    }
-    for model in models:
-        try:
-            payload = {
-                "model": model,
-                "messages": [
-                    {"role": "system", "content": "Ты Лунтик — добрый, наивный, отвечай коротко и мило. Максимум 3 предложения."},
-                    {"role": "user", "content": user_question}
-                ]
-            }
-            response = requests.post(
-                "https://openrouter.ai/api/v1/chat/completions",
-                headers=headers,
-                json=payload,
-                timeout=15
-            )
-            data = response.json()
-            if "choices" in data:
-                return data["choices"][0]["message"]["content"]
-            logger.warning(f"Модель {model} не ответила: {data}")
-        except Exception as e:
-            logger.error(f"Ошибка модели {model}: {e}")
-    return None
+    try:
+        headers = {
+            "Authorization": f"Bearer {os.getenv('GROQ_KEY')}",
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "model": "llama3-8b-8192",
+            "messages": [
+                {"role": "system", "content": "Ты Лунтик — добрый, наивный, отвечай коротко и мило. Максимум 3 предложения."},
+                {"role": "user", "content": user_question}
+            ]
+        }
+        response = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers=headers,
+            json=payload,
+            timeout=15
+        )
+        data = response.json()
+        if "choices" in data:
+            return data["choices"][0]["message"]["content"]
+        logger.error(f"Groq ответ: {data}")
+        return None
+    except Exception as e:
+        logger.error(f"Ошибка генерации: {e}")
+        return None
 
 
 def synthesize_voice(text: str) -> bytes | None:
